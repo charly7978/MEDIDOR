@@ -242,7 +242,7 @@ fun TopControlPanel(
                         onCameraSwitch(nextIndex)
                     }
                 ) {
-                    Icon(Icons.Default.Cameraswitch, contentDescription = "Cambiar cámara")
+                    Icon(Icons.Default.Refresh, contentDescription = "Cambiar cámara")
                 }
                 
                 IconButton(onClick = onSettingsClick) {
@@ -275,7 +275,7 @@ fun InfoPanel(
                 Icon(
                     imageVector = if (uiState.isCalibrated) Icons.Default.CheckCircle else Icons.Default.Warning,
                     contentDescription = null,
-                    tint = if (uiState.isCalibrated) Color.Green else Color.Orange,
+                    tint = if (uiState.isCalibrated) Color.Green else Color(0xFFFFA500),
                     modifier = Modifier.size(16.dp)
                 )
                 Text(
@@ -345,7 +345,7 @@ fun BottomControlPanel(
                     onClick = onUndo,
                     colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
                 ) {
-                    Icon(Icons.Default.Undo, contentDescription = null)
+                    Icon(Icons.Default.ArrowBack, contentDescription = null)
                     Spacer(modifier = Modifier.width(4.dp))
                     Text("Deshacer")
                 }

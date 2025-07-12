@@ -13,6 +13,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlin.math.*
+import kotlin.math.pow as mathPow
 
 data class SensorData(
     val acceleration: FloatArray = floatArrayOf(0f, 0f, 0f),
@@ -289,7 +290,8 @@ class AdvancedSensorManager(private val context: Context) : SensorEventListener,
     private fun calculateAltitudeFromPressure(pressure: Float): Float {
         // Fórmula barométrica estándar
         val seaLevelPressure = 1013.25f // hPa
-        return (44330.0 * (1.0 - (pressure / seaLevelPressure).pow(0.1903))).toFloat()
+        val ratio = pressure / seaLevelPressure
+        return (44330.0 * (1.0 - exp(0.1903 * ln(ratio.toDouble())))).toFloat()
     }
     
     fun getDistanceToObject(objectHeightInMeters: Float, pixelHeight: Int, imageHeight: Int, focalLength: Float): Float {

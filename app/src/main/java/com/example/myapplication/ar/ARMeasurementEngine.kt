@@ -151,7 +151,7 @@ class ARMeasurementEngine(private val context: Context) {
                 ARPlane(
                     center = center,
                     normal = normal,
-                    extent = plane.extentX to plane.extentZ,
+                    extent = floatArrayOf(plane.extentX, plane.extentZ),
                     type = plane.type
                 )
             } else null

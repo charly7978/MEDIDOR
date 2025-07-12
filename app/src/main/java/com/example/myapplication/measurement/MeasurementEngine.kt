@@ -139,10 +139,10 @@ class MeasurementEngine(private val context: Context) {
                     val realSize = findKnownObjectSize(label)
                     
                     DetectedObject(
-                        boundingBox = visionObject.boundingBox,
-                        confidence = confidence,
-                        label = label,
-                        estimatedRealSize = realSize
+                    boundingBox = RectF(visionObject.boundingBox),
+                    confidence = confidence,
+                    label = label,
+                    estimatedRealSize = realSize
                     )
                 }
                 

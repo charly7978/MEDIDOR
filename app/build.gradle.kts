@@ -52,39 +52,38 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
     
+    // Dependencias básicas para funcionalidad inicial
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
+    
+    // Dependencias avanzadas (comentadas temporalmente para evitar crashes)
     // CameraX para múltiples cámaras
-    implementation("androidx.camera:camera-core:1.3.1")
-    implementation("androidx.camera:camera-camera2:1.3.1")
-    implementation("androidx.camera:camera-lifecycle:1.3.1")
-    implementation("androidx.camera:camera-video:1.3.1")
-    implementation("androidx.camera:camera-view:1.3.1")
-    implementation("androidx.camera:camera-extensions:1.3.1")
+    // implementation("androidx.camera:camera-core:1.3.1")
+    // implementation("androidx.camera:camera-camera2:1.3.1")
+    // implementation("androidx.camera:camera-lifecycle:1.3.1")
+    // implementation("androidx.camera:camera-video:1.3.1")
+    // implementation("androidx.camera:camera-view:1.3.1")
+    // implementation("androidx.camera:camera-extensions:1.3.1")
     
     // ARCore para medición 3D real
-    implementation("com.google.ar:core:1.40.0")
-    // implementation("com.google.ar.sceneform:core:1.17.1") // Sceneform ya no se mantiene activamente
+    // implementation("com.google.ar:core:1.40.0")
     
     // TensorFlow Lite para IA
-    implementation("org.tensorflow:tensorflow-lite:2.14.0")
-    implementation("org.tensorflow:tensorflow-lite-gpu:2.14.0")
-    implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
-    
-    // OpenCV para procesamiento de imágenes avanzado (usando versión disponible)
-    // implementation("org.opencv:opencv-android:4.8.0") // No disponible en repositorios públicos
+    // implementation("org.tensorflow:tensorflow-lite:2.14.0")
+    // implementation("org.tensorflow:tensorflow-lite-gpu:2.14.0")
+    // implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
     
     // Sensores y ubicación
-    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
-    implementation("com.google.android.gms:play-services-location:21.0.1")
+    // implementation("com.google.android.gms:play-services-location:21.0.1")
     
     // ML Kit para detección de objetos
-    implementation("com.google.mlkit:object-detection:17.0.0")
-    implementation("com.google.mlkit:object-detection-custom:17.0.0")
+    // implementation("com.google.mlkit:object-detection:17.0.0")
+    // implementation("com.google.mlkit:object-detection-custom:17.0.0")
     
     // Matemáticas avanzadas
-    implementation("org.apache.commons:commons-math3:3.6.1")
+    // implementation("org.apache.commons:commons-math3:3.6.1")
     
     // Permisos dinámicos
-    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
+    // implementation("com.google.accompanist:accompanist-permissions:0.32.0")
     
     // Testing
     testImplementation(libs.junit)

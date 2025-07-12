@@ -60,15 +60,15 @@ dependencies {
     
     // ARCore para medición 3D real
     implementation("com.google.ar:core:1.40.0")
-    implementation("com.google.ar.sceneform:core:1.17.1")
+    // implementation("com.google.ar.sceneform:core:1.17.1") // Sceneform ya no se mantiene activamente
     
     // TensorFlow Lite para IA
     implementation("org.tensorflow:tensorflow-lite:2.14.0")
     implementation("org.tensorflow:tensorflow-lite-gpu:2.14.0")
     implementation("org.tensorflow:tensorflow-lite-support:0.4.4")
     
-    // OpenCV para procesamiento de imágenes avanzado
-    implementation("org.opencv:opencv-android:4.8.0")
+    // OpenCV para procesamiento de imágenes avanzado (usando versión disponible)
+    // implementation("org.opencv:opencv-android:4.8.0") // No disponible en repositorios públicos
     
     // Sensores y ubicación
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")

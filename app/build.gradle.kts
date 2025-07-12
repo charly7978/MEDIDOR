@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.myapplication"
+    namespace = "com.professional.measurement.ar"
     compileSdk = 36
 
     defaultConfig {
-        applicationId = "com.example.myapplication"
+        applicationId = "com.professional.measurement.ar"
         minSdk = 30
         targetSdk = 36
         versionCode = 1
@@ -25,6 +25,8 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            // Firmar con clave de debug para testing
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {

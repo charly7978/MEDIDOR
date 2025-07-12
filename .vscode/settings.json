@@ -1,0 +1,12 @@
+{
+    "javascript.format.placeOpenBraceOnNewLineForControlBlocks": true,
+    "javascript.format.insertSpaceAfterConstructor": true,
+    "javascript.preferGoToSourceDefinition": true,
+    "javascript.referencesCodeLens.showOnAllFunctions": true,
+    "java.maven.updateSnapshots": true,
+    "debug.javascript.autoAttachFilter": "smart",
+    "javascript.suggest.completeFunctionCalls": true,
+    "javascript.referencesCodeLens.enabled": true,
+    "java.eclipse.downloadSources": true,
+    "java.edit.validateAllOpenBuffersOnChanges": true
+}

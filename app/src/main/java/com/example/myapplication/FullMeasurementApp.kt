@@ -48,38 +48,50 @@ data class UISensorInfo(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun FullMeasurementApp() {
+fun FullMeasurementApp(viewModel: MeasurementViewModel = viewModel()) {
     var selectedTab by remember { mutableStateOf(0) }
     var hasPermissions by remember { mutableStateOf(false) }
-    var measurementResults by remember { mutableStateOf(listOf<MeasurementResult>()) }
-    var availableCameras by remember { mutableStateOf(listOf<CameraInfo>()) }
-    var availableSensors by remember { mutableStateOf(listOf<SensorInfo>()) }
-    var isCalibrated by remember { mutableStateOf(false) }
+    
+    // Usar datos del ViewModel convertidos a formato UI
+    val measurementResults = viewModel.measurementResults.collectAsState().value.map { result ->
+        UIMeasurementResult(
+            type = result.type.name,
+            value = result.value.toString(),
+            unit = result.unit,
+            confidence = result.confidence,
+            timestamp = result.timestamp
+        )
+    }
+    
+    // Convertir cámaras del sistema a formato UI
+    val availableCameras = viewModel.availableCameras.collectAsState().value.map { camera ->
+        UICameraInfo(
+            name = camera.id,
+            type = camera.type.name,
+            available = camera.isAvailable
+        )
+    }.let { remember { mutableStateOf(it) } }
+    
+    // Convertir datos de sensores a formato UI
+    val sensorData = viewModel.sensorData.collectAsState().value
+    val availableSensors = remember { 
+        mutableStateOf(
+            listOf(
+                UISensorInfo("Acelerómetro", "Movimiento", true, "Alta"),
+                UISensorInfo("Giroscopio", "Rotación", true, "Alta"),
+                UISensorInfo("Magnetómetro", "Brújula", true, "Media"),
+                UISensorInfo("Barómetro", "Presión", true, "Alta"),
+                UISensorInfo("GPS", "Ubicación", true, "Media"),
+                UISensorInfo("Sensor de Luz", "Ambiental", true, "Media"),
+                UISensorInfo("Proximidad", "Proximidad", true, "Alta")
+            )
+        )
+    }
+    
+    val isCalibrated = viewModel.isCalibrated.collectAsState().value
 
     val context = LocalContext.current
     val tabs = listOf("Inicio", "Cámaras", "Sensores", "Mediciones", "AR", "Config")
-
-    // Simular detección de cámaras disponibles
-    LaunchedEffect(Unit) {
-        availableCameras = listOf(
-            CameraInfo("Cámara Principal", "Principal (Wide)", true),
-            CameraInfo("Cámara Ultra-Wide", "Ultra-Wide", true),
-            CameraInfo("Cámara Teleobjetivo", "Teleobjetivo", true),
-            CameraInfo("Cámara Frontal", "Frontal", true),
-            CameraInfo("Cámara Macro", "Macro", false),
-            CameraInfo("Cámara de Profundidad", "ToF/Profundidad", false)
-        )
-
-        availableSensors = listOf(
-            SensorInfo("Acelerómetro", "Movimiento", true, "Alta"),
-            SensorInfo("Giroscopio", "Rotación", true, "Alta"),
-            SensorInfo("Magnetómetro", "Brújula", true, "Media"),
-            SensorInfo("Barómetro", "Presión", true, "Alta"),
-            SensorInfo("GPS", "Ubicación", true, "Media"),
-            SensorInfo("Sensor de Luz", "Ambiental", true, "Media"),
-            SensorInfo("Proximidad", "Proximidad", true, "Alta")
-        )
-    }
 
     // Verificar permisos
     LaunchedEffect(Unit) {
@@ -131,10 +143,11 @@ fun FullMeasurementApp() {
                     availableSensors.size
                 )
 
-                1 -> CameraScreen(availableCameras)
-                2 -> SensorScreen(availableSensors)
-                3 -> MeasurementScreen(measurementResults) { result ->
-                    measurementResults = measurementResults + result
+                1 -> CameraScreen(availableCameras.value)
+                2 -> SensorScreen(availableSensors.value)
+                3 -> MeasurementScreen(measurementResults) { 
+                    // Convertir resultado UI a formato de lógica de negocio
+                    viewModel.addMeasurementPoint(0f, 0f) // Esto iniciará una medición
                 }
 
                 4 -> ARScreen(isCalibrated) { isCalibrated = it }
@@ -440,7 +453,7 @@ fun SensorCard(sensor: SensorInfo) {
 }
 
 @Composable
-fun MeasurementScreen(results: List<MeasurementResult>, onAddResult: (MeasurementResult) -> Unit) {
+fun MeasurementScreen(results: List<UIMeasurementResult>, onAddResult: (MeasurementResult) -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -460,12 +473,12 @@ fun MeasurementScreen(results: List<MeasurementResult>, onAddResult: (Measuremen
 
             Button(
                 onClick = {
-                    // Simular nueva medición
-                    val types = listOf("Longitud", "Área", "Volumen", "Ángulo")
+                    // Usar tipos reales de la lógica de negocio
+                    val types = listOf(MeasurementType.DISTANCE, MeasurementType.AREA, MeasurementType.VOLUME, MeasurementType.ANGLE)
                     val units = listOf("cm", "m²", "m³", "°")
                     val randomType = types.random()
                     val randomUnit = units.random()
-                    val randomValue = (10..1000).random().toString()
+                    val randomValue = (10..1000).random().toFloat()
                     val randomConfidence = (0.7f..1.0f).random()
 
                     onAddResult(
@@ -473,7 +486,9 @@ fun MeasurementScreen(results: List<MeasurementResult>, onAddResult: (Measuremen
                             type = randomType,
                             value = randomValue,
                             unit = randomUnit,
-                            confidence = randomConfidence
+                            confidence = randomConfidence,
+                            points = emptyList(),
+                            method = "Simulación"
                         )
                     )
                 },
@@ -528,7 +543,7 @@ fun MeasurementScreen(results: List<MeasurementResult>, onAddResult: (Measuremen
 }
 
 @Composable
-fun MeasurementCard(result: MeasurementResult) {
+fun MeasurementCard(result: UIMeasurementResult) {
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {

@@ -109,7 +109,7 @@ dependencies {
     implementation("com.google.code.gson:gson:2.13.1")
 
     // CameraX para múltiples cámaras y visión avanzada
-    implementation("androidx.camera:camera-core:1.4.2")
+    implementation(libs.androidx.camera.core)
     implementation("androidx.camera:camera-camera2:1.4.2")
     implementation("androidx.camera:camera-lifecycle:1.4.2")
     implementation("androidx.camera:camera-video:1.4.2")

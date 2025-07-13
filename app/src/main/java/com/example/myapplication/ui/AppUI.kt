@@ -25,10 +25,9 @@ fun AppUI(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {
+                {
                     Text("Medidor Profesional AR")
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
+                }, colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary
                 )
             )

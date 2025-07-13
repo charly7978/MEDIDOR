@@ -2,6 +2,7 @@ package com.example.myapplication.measurement
 
 import android.graphics.Bitmap
 import android.graphics.PointF
+import androidx.compose.foundation.layout.Box
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
@@ -125,12 +126,14 @@ class MeasurementEngine {
         objectDetector.process(image)
             .addOnSuccessListener { detectedObjects ->
                 val objects = detectedObjects.map { obj ->
-                    DetectedObject(
-                        boundingBox = obj.boundingBox,
-                        confidence = obj.confidence,
-                        trackingId = obj.trackingId,
-                        labels = obj.labels.map { it.text }
-                    )
+                    Box {
+                        DetectedObject(
+                            obj.boundingBox,
+                            obj.confidence,
+                            obj.trackingId,
+                            obj.labels.map { it.text }
+                        )
+                    }
                 }
                 onObjectsDetected(objects)
             }

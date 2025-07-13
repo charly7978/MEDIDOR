@@ -8,7 +8,6 @@ import com.example.myapplication.measurement.MeasurementEngine
 import com.example.myapplication.measurement.MeasurementPoint
 import com.example.myapplication.measurement.MeasurementResult
 import com.example.myapplication.measurement.MeasurementType
-import com.example.myapplication.sensors.SensorInfo
 import com.example.myapplication.sensors.SensorManager
 import com.example.myapplication.measurement.MeasurementRepository
 import com.example.myapplication.measurement.MeasurementResultEntity
@@ -34,7 +33,7 @@ class MeasurementViewModel @Inject constructor(
         val hasPermissions: Boolean = false,
         val isCalibrated: Boolean = false,
         val availableCameras: List<CameraInfo> = emptyList(),
-        val availableSensors: List<SensorInfo> = emptyList(),
+        val availableSensors: Unit = emptyList(),
         val features: List<Feature> = emptyList(),
         val measurementResults: List<MeasurementResult> = emptyList(),
         val currentPoints: List<MeasurementPoint> = emptyList(),
@@ -98,9 +97,13 @@ class MeasurementViewModel @Inject constructor(
     private fun initializeSensors() {
         viewModelScope.launch {
             sensorManager.startSensors()
-            _uiState.update { current ->
-                current.copy(
-                    availableSensors = sensorManager.getAvailableSensors()
+            _uiState.update { it ->
+                return@update it.copy(
+                    availableSensors = with(sensorManager) {
+                        run({
+                            getAvailableSensors()
+                        })
+                    }
                 )
             }
         }

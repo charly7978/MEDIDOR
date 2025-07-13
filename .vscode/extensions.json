@@ -1,5 +1,6 @@
 {
     "recommendations": [
-        "xline.agent-lab"
+        "xline.agent-lab",
+        "ms-vscode.vscode-speech"
     ]
 }

@@ -20,6 +20,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.example.myapplication.sensors.getAvailableSensors
 
 @HiltViewModel
 class MeasurementViewModel @Inject constructor(
@@ -99,7 +100,7 @@ class MeasurementViewModel @Inject constructor(
             sensorManager.startSensors()
             _uiState.update { current ->
                 current.copy(
-                    availableSensors = sensorManager.getAvailableSensors()
+                    availableSensors = (sensorManager as com.example.myapplication.sensors.SensorManager).getAvailableSensors()
                 )
             }
         }

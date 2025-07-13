@@ -166,23 +166,24 @@ class MultiCameraManager(private val context: Context) {
         }
 
         return try {
+            val selector = CameraSelector.Builder()
+                .requireLensFacing(
+                    when (cameraType) {
+                        CameraType.FRONT -> CameraSelector.LENS_FACING_FRONT
+                        else -> CameraSelector.LENS_FACING_BACK
+                    }
+                ).build()
             val camera = cameraProvider?.bindToLifecycle(
                 lifecycleOwner,
-                CameraSelector.Builder().addCameraFilter {
-                    listOf(cameraInfo.id).map {
-                        CameraSelector.Builder().addCameraFilter { listOf() }.build()
-                    }
-                }.build(),
+                selector,
                 Preview.Builder().build(),
                 ImageCapture.Builder()
                     .setCaptureMode(ImageCapture.CAPTURE_MODE_MAXIMIZE_QUALITY)
                     .build()
             )
-
             activeCamera = camera
             Log.d(TAG, "Camera $cameraType bound successfully")
             camera
-
         } catch (e: Exception) {
             Log.e(TAG, "Error binding camera $cameraType", e)
             null

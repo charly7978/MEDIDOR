@@ -107,7 +107,7 @@ class MeasurementEngine {
         point2: MeasurementPoint
     ): MeasurementResult {
         val angle = calculateAngle(point1, vertex, point2)
-        val confidence = calculateConfidence(point1, point2)
+        val confidence = calculateAverageConfidence(listOf(point1, vertex, point2))
 
         return MeasurementResult(
             type = MeasurementType.ANGLE,

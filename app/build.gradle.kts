@@ -27,10 +27,10 @@ android {
             )
             signingConfig = signingConfigs.getByName("debug")
             
-            // Configurar nombre y ubicación del APK
+            // Configurar ubicación absoluta en el escritorio
             applicationVariants.all {
                 outputs.forEach { output ->
-                    val outputDirectory = File(project.rootDir, "apk_output")
+                    val outputDirectory = File(System.getProperty("user.home"), "Desktop/AndroidAPKs")
                     output.outputFileName = "MedidorAR-${versionName}.apk"
                     (output as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = 
                         "MedidorAR-${versionName}.apk"

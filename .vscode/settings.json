@@ -9,5 +9,13 @@
     "javascript.referencesCodeLens.enabled": true,
     "java.eclipse.downloadSources": true,
     "java.edit.validateAllOpenBuffersOnChanges": true,
-    "java.configuration.updateBuildConfiguration": "automatic"
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "python.terminal.shellIntegration.enabled": true,
+    "terminal.integrated.shellIntegration.environmentReporting": true,
+    "terminal.integrated.sendKeybindingsToShell": true,
+    "terminal.integrated.stickyScroll.enabled": true,
+    "terminal.integrated.suggest.enabled": true,
+    "terminal.integrated.automationProfile.windows": {
+        
+    }
 }

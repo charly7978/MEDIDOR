@@ -16,10 +16,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.myapplication.viewmodel.MeasurementViewModel
+import androidx.navigation.NavController
 
 @Composable
 fun ConfigScreen(
     viewModel: MeasurementViewModel,
+    navController: NavController,
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
@@ -48,11 +50,20 @@ fun ConfigScreen(
 
         item {
             ConfigCard(
-                title = "Calibración",
-                subtitle = "Configurar calibración de medición",
+                title = "Autodiagnóstico",
+                subtitle = "Verifica el estado de sensores y cámaras",
                 status = state.isCalibrated
             ) {
-                viewModel.setCalibrated(!state.isCalibrated)
+                navController.navigate("diagnostic")
+            }
+        }
+        item {
+            ConfigCard(
+                title = "Calibración Guiada",
+                subtitle = "Asistente paso a paso para calibrar sensores y cámaras",
+                status = state.isCalibrated
+            ) {
+                navController.navigate("calibration")
             }
         }
 

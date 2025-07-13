@@ -7,6 +7,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Straighten
 import androidx.compose.material3.*
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -16,6 +18,11 @@ import androidx.compose.ui.unit.dp
 import com.example.myapplication.measurement.MeasurementResult
 import com.example.myapplication.measurement.MeasurementType
 import com.example.myapplication.viewmodel.MeasurementViewModel
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.LaunchedEffect
+import kotlinx.coroutines.launch
+import androidx.compose.ui.graphics.Color
+import androidx.compose.foundation.rememberCoroutineScope
 
 @Composable
 fun MeasurementScreen(
@@ -23,7 +30,17 @@ fun MeasurementScreen(
     modifier: Modifier = Modifier
 ) {
     val state by viewModel.uiState.collectAsState()
-    
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+
+    // Mostrar errores en SnackBar
+    LaunchedEffect(state.error) {
+        state.error?.let {
+            scope.launch { snackbarHostState.showSnackbar(it) }
+            viewModel.setErrorShown()
+        }
+    }
+
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -39,32 +56,11 @@ fun MeasurementScreen(
                 style = MaterialTheme.typography.headlineMedium,
                 color = MaterialTheme.colorScheme.primary
             )
-
             Button(
-                onClick = {
-                    // Simular nueva medición
-                    val types = listOf(MeasurementType.DISTANCE, MeasurementType.AREA, MeasurementType.VOLUME, MeasurementType.ANGLE)
-                    val units = listOf("cm", "m²", "m³", "°")
-                    val randomType = types.random()
-                    val randomUnit = units.random()
-                    val randomValue = (10..1000).random().toFloat()
-                    val randomConfidence = (0.7f..1.0f).random()
-
-                    val newResult = MeasurementResult(
-                        type = randomType,
-                        value = randomValue,
-                        unit = randomUnit,
-                        confidence = randomConfidence,
-                        points = emptyList(),
-                        method = "Simulación"
-                    )
-                    viewModel.addMeasurementResult(newResult)
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary)
+                onClick = { viewModel.clearMeasurements() },
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
             ) {
-                Icon(Icons.Default.Add, contentDescription = null, tint = MaterialTheme.colorScheme.onPrimary)
-                Spacer(modifier = Modifier.width(8.dp))
-                Text("Nueva Medición", color = MaterialTheme.colorScheme.onPrimary)
+                Text("Borrar todo", color = MaterialTheme.colorScheme.onError)
             }
         }
 
@@ -92,7 +88,7 @@ fun MeasurementScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                     Text(
-                        "Presiona 'Nueva Medición' para comenzar",
+                        "Realiza una medición real con los sensores o cámaras para comenzar",
                         style = MaterialTheme.typography.bodyMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -107,6 +103,11 @@ fun MeasurementScreen(
                 }
             }
         }
+    }
+
+    // SnackBar para errores
+    Box(modifier = Modifier.fillMaxSize()) {
+        SnackbarHost(hostState = snackbarHostState)
     }
 }
 

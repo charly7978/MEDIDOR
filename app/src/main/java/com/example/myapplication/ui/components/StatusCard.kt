@@ -1,11 +1,18 @@
 package com.example.myapplication.ui.components
 
-import androidx.compose.material3.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Spacer
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.example.myapplication.R
 
 @Composable
 fun StatusCard(
@@ -23,29 +30,27 @@ fun StatusCard(
             modifier = Modifier.padding(16.dp)
         ) {
             Text(
-                text = stringResource(R.string.status_title),
+                text = "Estado del sistema",
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.primary
             )
             Spacer(modifier = Modifier.height(12.dp))
 
             StatusItem(
-                label = stringResource(R.string.permissions_label),
-                status = if (hasPermissions) stringResource(R.string.permissions_granted) 
-                        else stringResource(R.string.permissions_pending)
+                label = "Permisos",
+                status = if (hasPermissions) "Concedidos" else "Pendientes"
             )
             StatusItem(
-                label = stringResource(R.string.calibration_label),
-                status = if (isCalibrated) stringResource(R.string.calibration_calibrated)
-                        else stringResource(R.string.calibration_pending)
+                label = "Calibración",
+                status = if (isCalibrated) "Calibrado" else "Pendiente"
             )
             StatusItem(
-                label = stringResource(R.string.cameras_label),
-                status = stringResource(R.string.cameras_count, cameraCount)
+                label = "Cámaras",
+                status = "$cameraCount detectadas"
             )
             StatusItem(
-                label = stringResource(R.string.sensors_label),
-                status = stringResource(R.string.sensors_count, sensorCount)
+                label = "Sensores",
+                status = "$sensorCount activos"
             )
         }
     }
@@ -67,7 +72,6 @@ private fun StatusItem(label: String, status: String) {
         Text(
             text = status,
             style = MaterialTheme.typography.bodyMedium,
-            fontWeight = MaterialTheme.typography.bodyMedium.fontWeight,
             color = MaterialTheme.colorScheme.onSurface
         )
     }

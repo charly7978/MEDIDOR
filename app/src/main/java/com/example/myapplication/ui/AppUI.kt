@@ -10,6 +10,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.myapplication.ui.screens.*
+import com.example.myapplication.ui.screens.DiagnosticScreen
+import com.example.myapplication.ui.screens.CalibrationScreen
 import com.example.myapplication.viewmodel.MeasurementViewModel
 
 @Composable
@@ -71,7 +73,9 @@ fun AppUI(
             composable("sensors") { SensorScreen(viewModel) }
             composable("measure") { MeasurementScreen(viewModel) }
             composable("ar") { ARScreen(viewModel) }
-            composable("config") { ConfigScreen(viewModel) }
+            composable("config") { ConfigScreen(viewModel, navController) }
+            composable("diagnostic") { DiagnosticScreen(viewModel) }
+            composable("calibration") { CalibrationScreen(viewModel) }
         }
     }
 }

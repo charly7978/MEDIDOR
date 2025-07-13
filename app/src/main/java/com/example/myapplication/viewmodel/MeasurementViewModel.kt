@@ -10,7 +10,10 @@ import com.example.myapplication.measurement.MeasurementResult
 import com.example.myapplication.measurement.MeasurementType
 import com.example.myapplication.sensors.SensorInfo
 import com.example.myapplication.sensors.SensorManager
+import com.example.myapplication.measurement.MeasurementRepository
+import com.example.myapplication.measurement.MeasurementResultEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -22,7 +25,8 @@ import javax.inject.Inject
 class MeasurementViewModel @Inject constructor(
     private val measurementEngine: MeasurementEngine,
     private val sensorManager: SensorManager,
-    private val cameraManager: MultiCameraManager
+    private val cameraManager: MultiCameraManager,
+    private val measurementRepository: MeasurementRepository
 ) : ViewModel() {
 
     data class UiState(
@@ -41,6 +45,10 @@ class MeasurementViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(UiState())
     val uiState: StateFlow<UiState> = _uiState.asStateFlow()
 
+    private val errorHandler = CoroutineExceptionHandler { _, exception ->
+        _uiState.update { it.copy(error = exception.message) }
+    }
+
     data class Feature(
         val title: String,
         val description: String
@@ -50,6 +58,7 @@ class MeasurementViewModel @Inject constructor(
         loadFeatures()
         initializeSensors()
         initializeCameras()
+        observeMeasurements()
     }
 
     private fun loadFeatures() {
@@ -106,6 +115,14 @@ class MeasurementViewModel @Inject constructor(
         }
     }
 
+    private fun observeMeasurements() {
+        viewModelScope.launch(errorHandler) {
+            measurementRepository.getAll().collect { list ->
+                _uiState.update { it.copy(measurementResults = list.map { it.toDomain() }) }
+            }
+        }
+    }
+
     fun addMeasurementPoint(point: MeasurementPoint) {
         _uiState.update { current ->
             current.copy(
@@ -115,10 +132,8 @@ class MeasurementViewModel @Inject constructor(
     }
 
     fun addMeasurementResult(result: MeasurementResult) {
-        _uiState.update { current ->
-            current.copy(
-                measurementResults = current.measurementResults + result
-            )
+        viewModelScope.launch(errorHandler) {
+            measurementRepository.insert(result.toEntity())
         }
     }
 
@@ -146,8 +161,8 @@ class MeasurementViewModel @Inject constructor(
     }
 
     fun clearMeasurements() {
-        _uiState.update { current ->
-            current.copy(measurementResults = emptyList())
+        viewModelScope.launch(errorHandler) {
+            measurementRepository.deleteAll()
         }
     }
 
@@ -157,9 +172,32 @@ class MeasurementViewModel @Inject constructor(
         }
     }
 
+    fun setErrorShown() {
+        _uiState.update { it.copy(error = null) }
+    }
+
     override fun onCleared() {
         super.onCleared()
         sensorManager.stopSensors()
         cameraManager.release()
     }
+
+    // Conversión entre Entity y Domain
+    private fun MeasurementResultEntity.toDomain(): MeasurementResult = MeasurementResult(
+        type = MeasurementType.valueOf(type),
+        value = value,
+        unit = unit,
+        confidence = confidence,
+        points = emptyList(), // No persistimos puntos por simplicidad
+        method = method,
+        timestamp = timestamp
+    )
+    private fun MeasurementResult.toEntity(): MeasurementResultEntity = MeasurementResultEntity(
+        type = type.name,
+        value = value,
+        unit = unit,
+        confidence = confidence,
+        method = method,
+        timestamp = timestamp
+    )
 }

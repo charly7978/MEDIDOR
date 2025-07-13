@@ -100,7 +100,7 @@ class MeasurementViewModel @Inject constructor(
             sensorManager.startSensors()
             _uiState.update { current ->
                 current.copy(
-                    availableSensors = (sensorManager as com.example.myapplication.sensors.SensorManager).getAvailableSensors()
+                    availableSensors = sensorManager.getAvailableSensors()
                 )
             }
         }

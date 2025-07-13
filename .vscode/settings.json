@@ -33,5 +33,6 @@
     "terminal.integrated.copyOnSelection": true,
     "terminal.integrated.mouseWheelZoom": true,
     "terminal.integrated.smoothScrolling": true,
-    "terminal.integrated.windowsUseConptyDll": true
+    "terminal.integrated.windowsUseConptyDll": true,
+    "java.import.generatesMetadataFilesAtProjectRoot": true
 }

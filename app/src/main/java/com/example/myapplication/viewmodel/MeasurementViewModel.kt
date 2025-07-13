@@ -5,12 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.example.myapplication.camera.CameraInfo
 import com.example.myapplication.camera.MultiCameraManager
 import com.example.myapplication.measurement.MeasurementEngine
-import com.example.myapplication.measurement.MeasurementPoint
-import com.example.myapplication.measurement.MeasurementResult
-import com.example.myapplication.measurement.MeasurementType
+import com.example.myapplication.measurement.entity.MeasurementPoint
+import com.example.myapplication.measurement.entity.MeasurementResult
+import com.example.myapplication.measurement.entity.MeasurementType
 import com.example.myapplication.sensors.SensorManager
 import com.example.myapplication.measurement.MeasurementRepository
-import com.example.myapplication.measurement.MeasurementResultEntity
+import com.example.myapplication.measurement.entity.MeasurementResultEntity
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -1,4 +1,4 @@
-package com.example.myapplication.measurement
+package com.example.myapplication.measurement.entity
 
 /**
  * Constantes matemáticas y físicas con alta precisión para cálculos de medición.
@@ -27,4 +27,10 @@ object MeasurementConstants {
     
     // Tamaño de caché para resultados intermedios
     const val CACHE_SIZE = 100
+    
+    // Umbral de confianza para mediciones
+    const val CONFIDENCE_THRESHOLD = 0.95
+    
+    // Valor de confianza por defecto
+    const val DEFAULT_CONFIDENCE = 0.9
 }

@@ -1,4 +1,4 @@
-package com.example.myapplication.measurement
+package com.example.myapplication.measurement.entity
 
 /**
  * Jerarquía de errores para el sistema de medición.
@@ -12,6 +12,7 @@ sealed class MeasurementError : Exception() {
     // Errores de puntos de medición
     data class InvalidPoint(val point: MeasurementPoint, val reason: String) : MeasurementError()
     data class InsufficientPoints(val expected: Int, val actual: Int) : MeasurementError()
+    data class InvalidMeasurementPoints(val message: String) : MeasurementError()
     
     // Errores de precisión
     data class InsufficientPrecision(val confidence: Double, val required: Double) : MeasurementError()
@@ -28,28 +29,13 @@ sealed class MeasurementError : Exception() {
         is NotCalibrated -> "El sistema no está calibrado. Realice la calibración antes de medir."
         is CalibrationFailed -> "Error en la calibración: $reason"
         is InvalidCalibrationDistance -> "Distancia de calibración $distance m fuera de rango. Debe estar entre $min m y $max m"
-        is InvalidPoint -> "Punto no válido en (${point.x}, ${point.y}): $reason"
-        is InsufficientPoints -> "Se requieren al menos $expected puntos, pero solo se proporcionaron $actual"
-        is InsufficientPrecision -> "Precisión insuficiente: ${(confidence * 100).toInt()}% (mínimo requerido: ${(required * 100).toInt()}%)"
+        is InvalidPoint -> "Punto de medición inválido: $reason"
+        is InsufficientPoints -> "No hay suficientes puntos para la medición. Se requieren $expected pero solo hay $actual"
+        is InvalidMeasurementPoints -> "Puntos de medición inválidos: $message"
+        is InsufficientPrecision -> "Precisión insuficiente: $confidence (mínimo requerido: $required)"
         is MeasurementOutOfRange -> "Valor $value fuera de rango. Debe estar entre $min y $max"
         is CameraError -> "Error de cámara: $message"
         is SensorError -> "Error de sensor: $message"
         is ProcessingError -> "Error de procesamiento: $message"
-    }
-}
-
-/**
- * Valida un punto de medición.
- * @throws MeasurementError si el punto no es válido
- */
-fun MeasurementPoint.validate() {
-    if (x.isNaN() || y.isNaN() || z.isNaN()) {
-        throw MeasurementError.InvalidPoint(this, "Coordenadas no pueden ser NaN")
-    }
-    if (x.isInfinite() || y.isInfinite() || z.isInfinite()) {
-        throw MeasurementError.InvalidPoint(this, "Coordenadas no pueden ser infinitas")
-    }
-    if (confidence < 0.0 || confidence > 1.0) {
-        throw MeasurementError.InvalidPoint(this, "La confianza debe estar entre 0.0 y 1.0")
     }
 }

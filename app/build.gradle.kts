@@ -3,6 +3,7 @@ plugins {
     id("org.jetbrains.kotlin.android") version "1.9.22"
     id("com.google.dagger.hilt.android") version "2.50"
     kotlin("kapt") version "1.9.22"
+    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.22"
 }
 
 android {
@@ -78,11 +79,11 @@ android {
 dependencies {
     // Core Android
     implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.6.2")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
     implementation("androidx.activity:activity-compose:1.8.2")
     
     // Compose BOM
-    implementation(platform("androidx.compose:compose-bom:2023.10.01"))
+    implementation(platform("androidx.compose:compose-bom:2024.02.00"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")
     implementation("androidx.compose.ui:ui-tooling-preview")
@@ -101,51 +102,42 @@ dependencies {
     kapt("androidx.hilt:hilt-compiler:1.1.0")
 
     // Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.6")
-    
-    // Activity KTX for viewModels()
-    implementation("androidx.activity:activity-ktx:1.8.2")
+    implementation("androidx.navigation:navigation-compose:2.7.7")
     
     // Room para base de datos local
     val roomVersion = "2.6.1"
     implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion") // Soporte para corrutinas
+    implementation("androidx.room:room-ktx:$roomVersion")
     kapt("androidx.room:room-compiler:$roomVersion")
     
-    // Para evitar conflictos con las anotaciones de Room
-    annotationProcessor("androidx.room:room-compiler:$roomVersion")
-    
-    // Gson para conversión de tipos
-    implementation("com.google.code.gson:gson:2.13.1")
+    // CameraX
+    val cameraxVersion = "1.3.2"
+    implementation("androidx.camera:camera-core:${cameraxVersion}")
+    implementation("androidx.camera:camera-camera2:${cameraxVersion}")
+    implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
+    implementation("androidx.camera:camera-view:${cameraxVersion}")
+    implementation("androidx.camera:camera-extensions:${cameraxVersion}")
 
-    // CameraX para múltiples cámaras y visión avanzada
-    implementation("androidx.camera:camera-core:1.4.2")
-    implementation("androidx.camera:camera-camera2:1.4.2")
-    implementation("androidx.camera:camera-lifecycle:1.4.2")
-    implementation("androidx.camera:camera-video:1.4.2")
-    implementation("androidx.camera:camera-view:1.4.2")
-    implementation("androidx.camera:camera-extensions:1.4.2")
-
-    // ARCore para medición 3D real
-    implementation("com.google.ar:core:1.50.0")
-
-    // TensorFlow Lite para IA
+    // TensorFlow Lite
     implementation("org.tensorflow:tensorflow-lite:2.17.0")
     implementation("org.tensorflow:tensorflow-lite-gpu:2.17.0")
     implementation("org.tensorflow:tensorflow-lite-support:0.5.0")
 
-    // Sensores y ubicación
-    implementation("com.google.android.gms:play-services-location:21.3.0")
+    // ML Kit
+    implementation("com.google.mlkit:object-detection:17.0.0")
+    implementation("com.google.mlkit:object-detection-custom:17.0.0")
 
-    // ML Kit para detección de objetos
-    implementation("com.google.mlkit:object-detection:17.0.2")
-    implementation("com.google.mlkit:object-detection-custom:17.0.2")
+    // ARCore
+    implementation("com.google.ar:core:1.42.0")
 
-    // Matemáticas avanzadas
+    // Location Services
+    implementation("com.google.android.gms:play-services-location:21.2.0")
+
+    // Utils
+    implementation("com.google.code.gson:gson:2.10.1")
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.6.3")
+    implementation("com.google.accompanist:accompanist-permissions:0.32.0")
     implementation("org.apache.commons:commons-math3:3.6.1")
-
-    // Permisos dinámicos
-    implementation("com.google.accompanist:accompanist-permissions:0.37.3")
 
     // Testing
     testImplementation("junit:junit:4.13.2")

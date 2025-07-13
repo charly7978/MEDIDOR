@@ -1,4 +1,4 @@
-package com.example.myapplication.measurement
+package com.example.myapplication.measurement.entity
 
 /**
  * Enumeración que representa los diferentes tipos de mediciones que puede realizar la aplicación.

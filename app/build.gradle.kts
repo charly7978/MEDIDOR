@@ -25,8 +25,17 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
-            // Firmar con clave de debug para testing
             signingConfig = signingConfigs.getByName("debug")
+            
+            // Configurar nombre y ubicación del APK
+            applicationVariants.all {
+                outputs.forEach { output ->
+                    val outputDirectory = File(project.rootDir, "apk_output")
+                    output.outputFileName = "MedidorAR-${versionName}.apk"
+                    (output as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = 
+                        "MedidorAR-${versionName}.apk"
+                }
+            }
         }
     }
     compileOptions {

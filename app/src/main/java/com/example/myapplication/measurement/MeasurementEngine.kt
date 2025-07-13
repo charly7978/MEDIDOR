@@ -3,6 +3,9 @@ package com.example.myapplication.measurement
 import android.graphics.Bitmap
 import android.graphics.PointF
 import androidx.compose.foundation.layout.Box
+
+// Asegurarse de que MeasurementType esté importado correctamente
+import com.example.myapplication.measurement.MeasurementType
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.objects.ObjectDetection
 import com.google.mlkit.vision.objects.defaults.ObjectDetectorOptions
@@ -219,10 +222,6 @@ data class MeasurementResult(
         return java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss", java.util.Locale.getDefault())
             .format(java.util.Date(timestamp))
     }
-}
-
-enum class MeasurementType {
-    DISTANCE, AREA, VOLUME, ANGLE, HEIGHT, WIDTH, DEPTH
 }
 
 /**

@@ -9,6 +9,8 @@ import androidx.room.Query
 import androidx.room.Update
 import com.example.myapplication.data.entity.MeasurementEntity
 import com.example.myapplication.measurement.MeasurementResult
+import com.example.myapplication.measurement.MeasurementResultEntity
+import com.example.myapplication.measurement.toMeasurementEntity
 import kotlinx.coroutines.flow.Flow
 
 /**
@@ -52,36 +54,6 @@ interface MeasurementDao {
     @Query("SELECT DISTINCT sessionId FROM measurements ORDER BY timestamp DESC")
     fun getAllSessions(): Flow<List<String>>
 }
-
-/**
- * Convertidores para tipos personalizados.
- */
-class Converters {
-    @TypeConverter
-    fun fromPointFList(points: List<PointF>): String {
-        return points.joinToString("|") { "${it.x},${it.y}" }
-    }
-    
-    @TypeConverter
-    fun toPointFList(pointsString: String): List<PointF> {
-        if (pointsString.isEmpty()) return emptyList()
-        return pointsString.split("|").map { pointStr ->
-            val (x, y) = pointStr.split(",")
-            PointF(x.toFloat(), y.toFloat())
-        }
-    }
-    
-    @TypeConverter
-    fun fromStringList(list: List<String>): String {
-        return list.joinToString("|")
-    }
-    
-    @TypeConverter
-    fun toStringList(string: String): List<String> {
-        return if (string.isEmpty()) emptyList() else string.split("|")
-    }
-}
-
 
 
 /**
@@ -148,27 +120,18 @@ class MeasurementRepository(context: Context) {
         measurementDao.deleteById(id)
     }
     
-    // Convertir de MeasurementResult a MeasurementEntity
+    // Convertir de MeasurementResult a MeasurementEntity usando la extensión
     fun fromMeasurementResult(result: MeasurementResult, tags: List<String> = emptyList(), notes: String = ""): MeasurementEntity {
-        return MeasurementEntity(
-            type = result.type.name,
-            value = result.value,
-            unit = result.unit,
-            confidence = result.confidence,
-            points = result.points,
-            tags = tags,
-            notes = notes,
-            calibrationFactor = result.calibrationFactor
-        )
+        return result.toMeasurementEntity(tags, notes)
     }
     
     companion object {
         @Volatile
         private var INSTANCE: MeasurementRepository? = null
         
-        fun getRepository(dao: MeasurementDao): MeasurementRepository {
+        fun getRepository(context: Context): MeasurementRepository {
             return INSTANCE ?: synchronized(this) {
-                val instance = MeasurementRepository(dao)
+                val instance = MeasurementRepository(context)
                 INSTANCE = instance
                 instance
             }

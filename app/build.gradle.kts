@@ -96,6 +96,9 @@ dependencies {
     implementation("androidx.room:room-ktx:$roomVersion") // Soporte para corrutinas
     kapt("androidx.room:room-compiler:$roomVersion")
     
+    // Para usar el soporte de corrutinas con Room
+    implementation("androidx.room:room-ktx:$roomVersion")
+    
     // Gson para conversión de tipos
     implementation("com.google.code.gson:gson:2.10.1")
 
@@ -136,9 +139,7 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-    implementation(libs.androidx.room.runtime)
-    implementation(libs.androidx.room.ktx)
-    kapt(libs.androidx.room.compiler)
+    // Dependencias de Room ya incluidas arriba
     implementation(libs.androidx.material.icons.extended)
 }
 

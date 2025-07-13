@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Box
 // Asegurarse de que MeasurementType esté importado correctamente
 import com.example.myapplication.measurement.entity.MeasurementType
 import com.google.mlkit.vision.common.InputImage
+import com.example.myapplication.measurement.entity.DetectedObject
+import com.example.myapplication.measurement.entity.LruCache
 import com.example.myapplication.measurement.entity.MeasurementCacheKey
 import com.example.myapplication.measurement.entity.MeasurementConstants
 import com.example.myapplication.measurement.entity.MeasurementError
@@ -465,10 +467,3 @@ class MeasurementEngine {
         focalLength = focal
     }
 }
-
-data class DetectedObject(
-    val boundingBox: android.graphics.Rect,
-    val confidence: Float,
-    val trackingId: Int?,
-    val labels: List<String>
-) 

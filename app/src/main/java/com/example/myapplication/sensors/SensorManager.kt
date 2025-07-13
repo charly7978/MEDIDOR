@@ -35,6 +35,13 @@ data class CalibrationData(
     val isCalibrated: Boolean = false
 )
 
+data class SensorInfo(
+    val name: String,
+    val type: String,
+    val isAvailable: Boolean,
+    val accuracy: String
+)
+
 class SensorManager(private val context: Context) : SensorEventListener, LocationListener {
 
     private val sensorManager = context.getSystemService(Context.SENSOR_SERVICE) as SensorManager
@@ -231,6 +238,19 @@ class SensorManager(private val context: Context) : SensorEventListener, Locatio
     override fun onProviderEnabled(provider: String) {}
     override fun onProviderDisabled(provider: String) {}
     override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+}
+
+fun SensorManager.getAvailableSensors(): List<SensorInfo> {
+    // Ejemplo: puedes mapear los sensores activos a SensorInfo
+    return listOf(
+        SensorInfo("Acelerómetro", "Movimiento", true, "Alta"),
+        SensorInfo("Giroscopio", "Rotación", true, "Alta"),
+        SensorInfo("Magnetómetro", "Brújula", true, "Media"),
+        SensorInfo("Barómetro", "Presión", true, "Alta"),
+        SensorInfo("GPS", "Ubicación", true, "Media"),
+        SensorInfo("Sensor de Luz", "Ambiental", true, "Media"),
+        SensorInfo("Proximidad", "Proximidad", true, "Alta")
+    )
 }
 
 // Filtro de Kalman para suavizar lecturas de sensores

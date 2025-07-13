@@ -1,25 +1,29 @@
 package com.example.myapplication.viewmodel
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.camera.CameraInfo
 import com.example.myapplication.camera.MultiCameraManager
 import com.example.myapplication.measurement.MeasurementEngine
 import com.example.myapplication.measurement.MeasurementPoint
 import com.example.myapplication.measurement.MeasurementResult
 import com.example.myapplication.measurement.MeasurementType
+import com.example.myapplication.sensors.SensorInfo
 import com.example.myapplication.sensors.SensorManager
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class MeasurementViewModel(application: Application) : AndroidViewModel(application) {
-
-    private val measurementEngine = MeasurementEngine()
-    private val sensorManager = SensorManager(application)
-    private val cameraManager = MultiCameraManager(application)
+@HiltViewModel
+class MeasurementViewModel @Inject constructor(
+    private val measurementEngine: MeasurementEngine,
+    private val sensorManager: SensorManager,
+    private val cameraManager: MultiCameraManager
+) : ViewModel() {
 
     data class UiState(
         val hasPermissions: Boolean = false,
@@ -110,6 +114,14 @@ class MeasurementViewModel(application: Application) : AndroidViewModel(applicat
         }
     }
 
+    fun addMeasurementResult(result: MeasurementResult) {
+        _uiState.update { current ->
+            current.copy(
+                measurementResults = current.measurementResults + result
+            )
+        }
+    }
+
     fun clearCurrentPoints() {
         _uiState.update { current ->
             current.copy(currentPoints = emptyList())
@@ -121,8 +133,29 @@ class MeasurementViewModel(application: Application) : AndroidViewModel(applicat
         // TODO: Actualizar mode en el engine
     }
 
-    // Resto de funciones implementadas de manera similar...
-    // (PerformedMeasurement, exportMeasurements, etc.)
+    fun setCalibrated(calibrated: Boolean) {
+        _uiState.update { current ->
+            current.copy(isCalibrated = calibrated)
+        }
+    }
+
+    fun setPermissions(granted: Boolean) {
+        _uiState.update { current ->
+            current.copy(hasPermissions = granted)
+        }
+    }
+
+    fun clearMeasurements() {
+        _uiState.update { current ->
+            current.copy(measurementResults = emptyList())
+        }
+    }
+
+    fun exportMeasurements(): String {
+        return _uiState.value.measurementResults.joinToString("\n") { result ->
+            "${result.type.name}: ${result.value} ${result.unit} (${(result.confidence * 100).toInt()}% confianza)"
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

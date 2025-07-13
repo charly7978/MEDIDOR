@@ -4,12 +4,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.myapplication.R
+import com.example.myapplication.ui.screens.*
 import com.example.myapplication.viewmodel.MeasurementViewModel
 
 @Composable
@@ -17,12 +17,13 @@ fun AppUI(
     viewModel: MeasurementViewModel = hiltViewModel()
 ) {
     val navController = rememberNavController()
+    var selectedTab by remember { mutableStateOf(0) }
     
     Scaffold(
         topBar = {
             TopAppBar(
                 title = {
-                    Text(stringResource(R.string.app_name))
+                    Text("Medidor Profesional AR")
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary
@@ -44,9 +45,16 @@ fun AppUI(
                     NavigationBarItem(
                         icon = { Icon(tab.icon, contentDescription = null) },
                         label = { Text(tab.label) },
-                        selected = false, // TODO: Link to nav state
+                        selected = selectedTab == index,
                         onClick = {
-                            navController.navigate(tab.route)
+                            selectedTab = index
+                            navController.navigate(tab.route) {
+                                popUpTo(navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
                         }
                     )
                 }

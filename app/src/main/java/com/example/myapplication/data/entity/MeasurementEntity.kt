@@ -18,13 +18,16 @@ data class MeasurementEntity(
     val type: String,
     val value: Double,
     val unit: String,
+    val title: String = "",
+    val description: String = "",
     val timestamp: Long = System.currentTimeMillis(),
     val confidence: Float = 1.0f,
     val points: List<PointF> = emptyList(),
     val tags: List<String> = emptyList(),
     val notes: String = "",
     val isFavorite: Boolean = false,
+    val isSynced: Boolean = false,
     val calibrationFactor: Double = 1.0,
     val deviceId: String = "",
-    val sessionId: String = java.util.UUID.randomUUID().toString()
+    val sessionId: String? = null
 )

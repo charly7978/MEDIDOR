@@ -1,6 +1,5 @@
 package com.example.myapplication.data
 
-import android.content.Context
 import androidx.room.Transaction
 import com.example.myapplication.data.dao.MeasurementDao
 import com.example.myapplication.data.entity.MeasurementEntity
@@ -8,7 +7,6 @@ import com.example.myapplication.measurement.entity.MeasurementResult
 import com.example.myapplication.measurement.entity.MeasurementResultEntity
 import com.example.myapplication.measurement.dao.MeasurementResultDao
 import kotlinx.coroutines.flow.Flow
-import java.util.*
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -54,8 +52,13 @@ class MeasurementRepository @Inject constructor(
     }
     
     // Insertar una nueva medición
-    suspend fun insertMeasurement(measurement: MeasurementEntity): Long {
+    suspend fun insert(measurement: MeasurementEntity): Long {
         return measurementDao.insert(measurement)
+    }
+    
+    // Alias para compatibilidad
+    suspend fun insertMeasurement(measurement: MeasurementEntity): Long {
+        return insert(measurement)
     }
     
     // Insertar múltiples mediciones
@@ -84,8 +87,13 @@ class MeasurementRepository @Inject constructor(
     }
     
     // Eliminar todas las mediciones
-    suspend fun deleteAllMeasurements() {
+    suspend fun deleteAll() {
         measurementDao.deleteAll()
+    }
+    
+    // Alias para compatibilidad
+    suspend fun deleteAllMeasurements() {
+        deleteAll()
     }
     
     // Buscar mediciones
@@ -128,6 +136,11 @@ class MeasurementRepository @Inject constructor(
         return measurementResultDao.getAllResults()
     }
     
+    // Alias para compatibilidad con ViewModel
+    fun getAll(): Flow<List<MeasurementResultEntity>> {
+        return getAllResults()
+    }
+    
     // Obtener resultados recientes
     fun getRecentResults(limit: Int = 10): Flow<List<MeasurementResultEntity>> {
         return measurementResultDao.getRecentResults(limit)
@@ -167,43 +180,5 @@ class MeasurementRepository @Inject constructor(
     // Obtener resultados no sincronizados
     suspend fun getUnsyncedResults(): List<MeasurementResultEntity> {
         return measurementResultDao.getUnsyncedResults()
-    }
-    
-    // Insertar múltiples mediciones
-    suspend fun insertAll(measurements: List<MeasurementEntity>) {
-        measurements.forEach { measurementDao.insert(it) }
-    }
-    
-    // Actualizar una medición existente
-    suspend fun update(measurement: MeasurementEntity) {
-        measurementDao.update(measurement)
-    }
-    
-    // Eliminar una medición
-    suspend fun delete(measurement: MeasurementEntity) {
-        measurementDao.delete(measurement)
-    }
-    
-    // Eliminar una medición por ID
-    suspend fun deleteById(id: Long) {
-        measurementDao.deleteById(id)
-    }
-    
-    // Convertir de MeasurementResult a MeasurementEntity usando la extensión
-    fun fromMeasurementResult(result: MeasurementResult, tags: List<String> = emptyList(), notes: String = ""): MeasurementEntity {
-        return result.toMeasurementEntity(tags, notes)
-    }
-    
-    companion object {
-        @Volatile
-        private var INSTANCE: MeasurementRepository? = null
-        
-        fun getRepository(context: Context): MeasurementRepository {
-            return INSTANCE ?: synchronized(this) {
-                val instance = MeasurementRepository(context)
-                INSTANCE = instance
-                instance
-            }
-        }
     }
 }

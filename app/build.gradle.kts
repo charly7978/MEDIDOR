@@ -25,10 +25,20 @@ android {
 
     signingConfigs {
         create("release") {
-            storeFile = file(project.findProperty("measurementAppStoreFile") ?: "")
-            storePassword = project.findProperty("measurementAppStorePassword") as String? ?: ""
-            keyAlias = project.findProperty("measurementAppKeyAlias") as String? ?: ""
-            keyPassword = project.findProperty("measurementAppKeyPassword") as String? ?: ""
+            // Usar keystore de debug por defecto si no se especifica uno personalizado
+            val keystoreFile = project.findProperty("measurementAppStoreFile") as String?
+            if (!keystoreFile.isNullOrEmpty() && file(keystoreFile).exists()) {
+                storeFile = file(keystoreFile)
+                storePassword = project.findProperty("measurementAppStorePassword") as String? ?: ""
+                keyAlias = project.findProperty("measurementAppKeyAlias") as String? ?: ""
+                keyPassword = project.findProperty("measurementAppKeyPassword") as String? ?: ""
+            } else {
+                // Usar configuración de debug como fallback
+                storeFile = file("${System.getProperty("user.home")}/.android/debug.keystore")
+                storePassword = "android"
+                keyAlias = "androiddebugkey"
+                keyPassword = "android"
+            }
         }
     }
 
@@ -92,32 +102,27 @@ dependencies {
     // AndroidX Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.7.0")
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:2.7.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
-
-    // Hilt para inyección de dependencias
-    implementation("com.google.dagger:hilt-android:2.50")
-    kapt("com.google.dagger:hilt-android-compiler:2.50")
-    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
-    kapt("androidx.hilt:hilt-compiler:1.1.0")
-
-    // Navigation
-    implementation("androidx.navigation:navigation-compose:2.7.7")
     
-    // Room para base de datos local
-    val roomVersion = "2.6.1"
-    implementation("androidx.room:room-runtime:$roomVersion")
-    implementation("androidx.room:room-ktx:$roomVersion")
-    kapt("androidx.room:room-compiler:$roomVersion")
+    // Hilt
+    implementation("com.google.dagger:hilt-android:2.50")
+    kapt("com.google.dagger:hilt-compiler:2.50")
+    implementation("androidx.hilt:hilt-navigation-compose:1.1.0")
+    
+    // Navigation
+    implementation("androidx.navigation:navigation-compose:2.7.6")
+    
+    // Room
+    implementation("androidx.room:room-runtime:2.6.1")
+    implementation("androidx.room:room-ktx:2.6.1")
+    kapt("androidx.room:room-compiler:2.6.1")
     
     // CameraX
-    val cameraxVersion = "1.3.2"
-    implementation("androidx.camera:camera-core:${cameraxVersion}")
-    implementation("androidx.camera:camera-camera2:${cameraxVersion}")
-    implementation("androidx.camera:camera-lifecycle:${cameraxVersion}")
-    implementation("androidx.camera:camera-view:${cameraxVersion}")
-    implementation("androidx.camera:camera-extensions:${cameraxVersion}")
-
+    implementation("androidx.camera:camera-core:1.3.1")
+    implementation("androidx.camera:camera-camera2:1.3.1")
+    implementation("androidx.camera:camera-lifecycle:1.3.1")
+    implementation("androidx.camera:camera-view:1.3.1")
+    implementation("androidx.camera:camera-extensions:1.3.1")
+    
     // TensorFlow Lite
     implementation("org.tensorflow:tensorflow-lite:2.17.0")
     implementation("org.tensorflow:tensorflow-lite-gpu:2.17.0")
@@ -147,12 +152,8 @@ dependencies {
     androidTestImplementation("androidx.compose.ui:ui-test-junit4")
     debugImplementation("androidx.compose.ui:ui-tooling")
     debugImplementation("androidx.compose.ui:ui-test-manifest")
-    
-    // Material Icons Extended
-    implementation("androidx.compose.material:material-icons-extended:1.7.8")
 }
 
-// Configuración de Hilt
 kapt {
     correctErrorTypes = true
 }

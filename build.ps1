@@ -2,9 +2,10 @@
 
 # Configuración
 $JAVA_HOME = "C:\Program Files\Java\jdk-21"  # Ruta de JDK detectada
+$env:JAVA_HOME = $JAVA_HOME  # Establecer la variable de entorno JAVA_HOME
 $ANDROID_SDK = "$env:LOCALAPPDATA\Android\Sdk"
-$BUILD_TOOLS = "$ANDROID_SDK\build-tools\36.0.0"  # Usando la versión más reciente
-$PLATFORM = "$ANDROID_SDK\platforms\android-36"  # Usando la versión más reciente
+$BUILD_TOOLS = "$ANDROID_SDK\build-tools\34.0.0"  # Usando la versión disponible
+$PLATFORM = "$ANDROID_SDK\platforms\android-34"  # Usando la versión disponible
 
 # Directorios
 $SRC_DIR = "app\src\main\java"

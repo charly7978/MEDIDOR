@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 import com.example.myapplication.BuildConfig
 import com.example.myapplication.data.dao.MeasurementDao
@@ -28,7 +29,7 @@ import javax.inject.Provider
         MeasurementEntity::class,
         MeasurementResultEntity::class
     ],
-    version = 1,
+    version = 2,
     exportSchema = true
 )
 @TypeConverters(Converters::class)
@@ -57,6 +58,27 @@ abstract class AppDatabase : RoomDatabase() {
         @Volatile
         private var INSTANCE: AppDatabase? = null
         private const val DATABASE_NAME = "measurement_database"
+        
+        /**
+         * Migración de la versión 1 a la 2 de la base de datos.
+         * Agrega las columnas faltantes a las tablas existentes.
+         */
+        val MIGRATION_1_2 = object : Migration(1, 2) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                // Agregar columnas faltantes a la tabla measurements
+                database.execSQL("ALTER TABLE measurements ADD COLUMN title TEXT NOT NULL DEFAULT ''")
+                database.execSQL("ALTER TABLE measurements ADD COLUMN description TEXT NOT NULL DEFAULT ''")
+                database.execSQL("ALTER TABLE measurements ADD COLUMN isSynced INTEGER NOT NULL DEFAULT 0")
+                
+                // Agregar columnas faltantes a la tabla measurement_results
+                database.execSQL("ALTER TABLE measurement_results ADD COLUMN name TEXT NOT NULL DEFAULT ''")
+                database.execSQL("ALTER TABLE measurement_results ADD COLUMN description TEXT NOT NULL DEFAULT ''")
+                database.execSQL("ALTER TABLE measurement_results ADD COLUMN isFavorite INTEGER NOT NULL DEFAULT 0")
+                database.execSQL("ALTER TABLE measurement_results ADD COLUMN isSynced INTEGER NOT NULL DEFAULT 0")
+                database.execSQL("ALTER TABLE measurement_results ADD COLUMN sessionId TEXT")
+                database.execSQL("ALTER TABLE measurement_results ADD COLUMN measurementId INTEGER")
+            }
+        }
         
         /**
          * Obtiene una instancia de la base de datos.

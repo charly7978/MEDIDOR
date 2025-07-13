@@ -3,7 +3,7 @@ package com.example.myapplication.di
 import android.content.Context
 import androidx.room.Room
 import com.example.myapplication.data.AppDatabase
-import com.example.myapplication.data.MeasurementDao
+import com.example.myapplication.data.dao.MeasurementDao
 import com.example.myapplication.data.MeasurementRepository
 import com.example.myapplication.measurement.dao.MeasurementResultDao
 import dagger.Module

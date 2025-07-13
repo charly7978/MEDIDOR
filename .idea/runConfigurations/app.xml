@@ -1,5 +1,6 @@
 <component name="ProjectRunConfigurationManager">
   <configuration default="false" name="app" type="AndroidRunConfigurationType" factoryName="Android App" activateToolWindowBeforeRun="false">
+    <module name="MyApplication.app" />
     <option name="ANDROID_RUN_CONFIGURATION_SCHEMA_VERSION" value="1" />
     <option name="DEPLOY" value="true" />
     <option name="DEPLOY_APK_FROM_BUNDLE" value="false" />
@@ -9,7 +10,7 @@
     <option name="ALL_USERS" value="true" />
     <option name="ALWAYS_INSTALL_WITH_PM" value="true" />
     <option name="ALLOW_ASSUME_VERIFIED" value="false" />
-    <option name="CLEAR_APP_STORAGE" value="false" />
+    <option name="CLEAR_APP_STORAGE" value="true" />
     <option name="DYNAMIC_FEATURES_DISABLED_LIST" value="" />
     <option name="ACTIVITY_EXTRA_FLAGS" value="" />
     <option name="MODE" value="default_activity" />

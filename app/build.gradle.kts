@@ -7,12 +7,13 @@ plugins {
 
 android {
     namespace = "com.example.myapplication"
-    compileSdk = 34
+    compileSdk = 36
     buildToolsVersion = "34.0.0"
 
     defaultConfig {
         applicationId = "com.example.myapplication"
-        minSdk = 30  // Aumentado para mejor compatibilidad con Android 13
+        minSdk = 30  // Documental para mejor compatibilidad con Android 13
+        //noinspection OldTargetApi
         targetSdk = 34  // Actualizado para Android 13+
         versionCode = 1
         versionName = "1.0"
@@ -71,11 +72,13 @@ android {
 
 dependencies {
     // Core Android
-    implementation("androidx.core:core-ktx:1.12.0")
-    implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.7.0")
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    //noinspection UseTomlInstead,GradleDependency
     implementation("androidx.activity:activity-compose:1.8.2")
     
     // Compose BOM
+    //noinspection GradleDependency
     implementation(platform("androidx.compose:compose-bom:2023.10.01"))
     implementation("androidx.compose.ui:ui")
     implementation("androidx.compose.ui:ui-graphics")

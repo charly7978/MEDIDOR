@@ -5,7 +5,10 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.example.myapplication.data.dao.MeasurementDao
+import com.example.myapplication.data.entity.MeasurementEntity
 import com.example.myapplication.measurement.MeasurementResultEntity
+import com.example.myapplication.measurement.dao.MeasurementResultDao
 
 /**
  * Base de datos principal de la aplicación que contiene todas las entidades.

@@ -1,33 +1,15 @@
 package com.example.myapplication.data
 
 import android.content.Context
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Update
+import com.example.myapplication.data.entity.MeasurementEntity
 import com.example.myapplication.measurement.MeasurementResult
 import kotlinx.coroutines.flow.Flow
-import java.util.*
-
-/**
- * Entidad de base de datos para almacenar mediciones.
- */
-@Entity(tableName = "measurements")
-data class MeasurementEntity(
-    @PrimaryKey(autoGenerate = true) val id: Long = 0,
-    val type: String,
-    val value: Double,
-    val unit: String,
-    val timestamp: Long = System.currentTimeMillis(),
-    val confidence: Float = 1.0f,
-    val points: List<PointF> = emptyList(),
-    val tags: List<String> = emptyList(),
-    val notes: String = "",
-    val isFavorite: Boolean = false,
-    val calibrationFactor: Double = 1.0,
-    val deviceId: String = "",
-    val sessionId: String = UUID.randomUUID().toString()
-)
 
 /**
  * DAO (Data Access Object) para operaciones de base de datos de mediciones.
@@ -40,7 +22,7 @@ interface MeasurementDao {
     @Query("SELECT * FROM measurements WHERE id = :id")
     suspend fun getMeasurementById(id: Long): MeasurementEntity?
     
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(measurement: MeasurementEntity): Long
     
     @Update
@@ -64,7 +46,7 @@ interface MeasurementDao {
     @Query("SELECT * FROM measurements WHERE timestamp BETWEEN :startTime AND :endTime ORDER BY timestamp DESC")
     fun getMeasurementsInTimeRange(startTime: Long, endTime: Long): Flow<List<MeasurementEntity>>
     
-    @Query("SELECT * FROM measurements WHERE sessionId = :sessionId ORDER BY timestamp")
+    @Query("SELECT * FROM measurements WHERE sessionId = :sessionId ORDER BY timestamp DESC")
     fun getMeasurementsBySession(sessionId: String): Flow<List<MeasurementEntity>>
     
     @Query("SELECT DISTINCT sessionId FROM measurements ORDER BY timestamp DESC")
@@ -100,39 +82,15 @@ class Converters {
     }
 }
 
-/**
- * Base de datos de Room para almacenar mediciones.
- */
-@Database(entities = [MeasurementEntity::class], version = 1, exportSchema = false)
-@TypeConverters(Converters::class)
-abstract class AppDatabase : RoomDatabase() {
-    abstract fun measurementDao(): MeasurementDao
-    
-    companion object {
-        @Volatile
-        private var INSTANCE: AppDatabase? = null
-        
-        fun getDatabase(context: Context): AppDatabase {
-            return INSTANCE ?: synchronized(this) {
-                val instance = Room.databaseBuilder(
-                    context.applicationContext,
-                    AppDatabase::class.java,
-                    "measurement_database"
-                )
-                .fallbackToDestructiveMigration()
-                .build()
-                INSTANCE = instance
-                instance
-            }
-        }
-    }
-}
+
 
 /**
  * Repositorio para manejar operaciones de datos de mediciones.
  * Proporciona una API limpia para el resto de la aplicación.
  */
-class MeasurementRepository private constructor(private val measurementDao: MeasurementDao) {
+class MeasurementRepository(context: Context) {
+    private val db = AppDatabase.getDatabase(context)
+    private val measurementDao = db.measurementDao()
     // Flujo de todas las mediciones ordenadas por fecha descendente
     val allMeasurements: Flow<List<MeasurementEntity>> = measurementDao.getAllMeasurements()
     

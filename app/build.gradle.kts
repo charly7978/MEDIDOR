@@ -3,7 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.dagger.hilt.android")
-    id("kotlin-kapt")
+    id("org.jetbrains.kotlin.kapt")
 }
 
 android {
@@ -77,9 +77,11 @@ dependencies {
     implementation(libs.androidx.material3)
 
     // Hilt para inyección de dependencias
-    implementation("com.google.dagger:hilt-android:2.56.2")
-    kapt("com.google.dagger:hilt-android-compiler:2.56.2")
+    val hiltVersion = "2.51.1"
+    implementation("com.google.dagger:hilt-android:$hiltVersion")
+    kapt("com.google.dagger:hilt-android-compiler:$hiltVersion")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
+    kapt("androidx.hilt:hilt-compiler:1.2.0")
 
     // Navigation
     implementation("androidx.navigation:navigation-compose:2.9.1")
@@ -89,13 +91,13 @@ dependencies {
     implementation(libs.androidx.activity.ktx)
     
     // Room para base de datos local
-    val room_version = "2.6.1"
-    implementation("androidx.room:room-runtime:$room_version")
-    kapt("androidx.room:room-compiler:$room_version")
-    implementation("androidx.room:room-ktx:$room_version") // Soporte para corrutinas
+    val roomVersion = "2.6.1"
+    implementation("androidx.room:room-runtime:$roomVersion")
+    implementation("androidx.room:room-ktx:$roomVersion") // Soporte para corrutinas
+    kapt("androidx.room:room-compiler:$roomVersion")
     
-    // Para usar anotaciones de Room sin conflicto con Kotlin
-    kapt("androidx.room:room-compiler:$room_version")
+    // Gson para conversión de tipos
+    implementation("com.google.code.gson:gson:2.10.1")
 
     // CameraX para múltiples cámaras y visión avanzada
     implementation("androidx.camera:camera-core:1.4.2")

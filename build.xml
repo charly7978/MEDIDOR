@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="MyApplication" default="help">
+    <!-- Configuración básica -->
+    <property name="sdk.dir" value="${env.ANDROID_HOME}"/>
+    <property name="target" value="android-34"/>
+    
+    <!-- Rutas -->
+    <property name="src.dir" location="app/src/main/java"/>
+    <property name="res.dir" location="app/src/main/res"/>
+    <property name="assets.dir" location="app/src/main/assets"/>
+    <property name="gen.dir" location="app/build/generated/source/r/debug"/>
+    <property name="out.dir" location="app/build/outputs"/>
+    <property name="out.classes.dir" location="${out.dir}/classes"/>
+    <property name="out.dex.dir" location="${out.dir}/dex"/>
+    <property name="out.apk.dir" location="${out.dir}/apk"/>
+    
+    <!-- Classpath -->
+    <path id="android.library.classpath">
+        <fileset dir="${sdk.dir}/platforms/android-34" includes="android.jar"/>
+        <fileset dir="${sdk.dir}/extras/android/support/v4" includes="android-support-v4.jar"/>
+    </path>
+    
+    <!-- Inicialización -->
+    <target name="-setup">
+        <echo>Configurando compilación...</echo>
+        <mkdir dir="${out.dir}"/>
+        <mkdir dir="${out.classes.dir}"/>
+        <mkdir dir="${out.dex.dir}"/>
+        <mkdir dir="${out.apk.dir}"/>
+    </target>
+    
+    <!-- Compilación de R.java -->
+    <target name="-resource-src" depends="-setup">
+        <echo>Generando R.java...</echo>
+        <exec executable="${sdk.dir}/build-tools/34.0.0/aapt" failonerror="true">
+            <arg value="package"/>
+            <arg value="-f"/>
+            <arg value="-m"/>
+            <arg value="-J"/>
+            <arg value="${gen.dir}"/>
+            <arg value="-M"/>
+            <arg value="app/src/main/AndroidManifest.xml"/>
+            <arg value="-S"/>
+            <arg value="${res.dir}"/>
+            <arg value="-I"/>
+            <arg value="${sdk.dir}/platforms/android-34/android.jar"/>
+        </exec>
+    </target>
+    
+    <!-- Compilación de Java -->
+    <target name="compile" depends="-resource-src">
+        <echo>Compilando código Java...</echo>
+        <javac 
+            encoding="UTF-8"
+            target="1.8" 
+            source="1.8"
+            destdir="${out.classes.dir}" 
+            bootclasspathref="android.library.classpath"
+            includeantruntime="false"
+            debug="true">
+            <src path="${src.dir}"/>
+            <src path="${gen.dir}"/>
+            <classpath refid="android.library.classpath"/>
+        </javac>
+    </target>
+    
+    <!-- Creación del archivo .dex -->
+    <target name="dex" depends="compile">
+        <echo>Creando archivo DEX...</echo>
+        <exec executable="${sdk.dir}/build-tools/34.0.0/d8" failonerror="true">
+            <arg value="--output=${out.dex.dir}"/>
+            <arg value="--lib=${sdk.dir}/platforms/android-34/android.jar"/>
+            <fileset dir="${out.classes.dir}" includes="**/*.class"/>
+        </exec>
+    </target>
+    
+    <!-- Creación del APK -->
+    <target name="package" depends="dex">
+        <echo>Creando APK...</echo>
+        <exec executable="${sdk.dir}/build-tools/34.0.0/aapt" failonerror="true">
+            <arg value="package"/>
+            <arg value="-f"/>
+            <arg value="-M"/>
+            <arg value="app/src/main/AndroidManifest.xml"/>
+            <arg value="-S"/>
+            <arg value="${res.dir}"/>
+            <arg value="-I"/>
+            <arg value="${sdk.dir}/platforms/android-34/android.jar"/>
+            <arg value="-F"/>
+            <arg value="${out.apk.dir}/app-unsigned.apk"/>
+        </exec>
+        
+        <!-- Agregar clases.dex al APK -->
+        <exec executable="${sdk.dir}/build-tools/34.0.0/aapt" failonerror="true">
+            <arg value="add"/>
+            <arg value="${out.apk.dir}/app-unsigned.apk"/>
+            <arg value="classes.dex"/>
+        </exec>
+        
+        <!-- Firmar el APK -->
+        <exec executable="${sdk.dir}/build-tools/34.0.0/apksigner" failonerror="true">
+            <arg value="sign"/>
+            <arg value="--ks"/>
+            <arg value="app/keystore/measurement_app_keystore.jks"/>
+            <arg value="--ks-key-alias"/>
+            <arg value="measurement_app_key"/>
+            <arg value="--ks-pass"/>
+            <arg value="pass:android123"/>
+            <arg value="--key-pass"/>
+            <arg value="pass:android123"/>
+            <arg value="--out"/>
+            <arg value="${out.apk.dir}/app-release.apk"/>
+            <arg value="${out.apk.dir}/app-unsigned.apk"/>
+        </exec>
+        
+        <echo>APK generado en: ${out.apk.dir}/app-release.apk</echo>
+    </target>
+    
+    <!-- Limpiar archivos generados -->
+    <target name="clean">
+        <delete dir="${out.dir}"/>
+        <delete dir="${gen.dir}"/>
+    </target>
+    
+    <!-- Tarea por defecto -->
+    <target name="help">
+        <echo>Uso: ant [target]</echo>
+        <echo>Targets:</echo>
+        <echo>  compile - Compila el código Java</echo>
+        <echo>  dex     - Crea el archivo DEX</echo>
+        <echo>  package - Crea el APK firmado</echo>
+        <echo>  clean   - Limpia los archivos generados</echo>
+    </target>
+</project>

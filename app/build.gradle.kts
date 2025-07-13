@@ -87,6 +87,15 @@ dependencies {
     // ViewModel y Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
     implementation(libs.androidx.activity.ktx)
+    
+    // Room para base de datos local
+    val room_version = "2.6.1"
+    implementation("androidx.room:room-runtime:$room_version")
+    kapt("androidx.room:room-compiler:$room_version")
+    implementation("androidx.room:room-ktx:$room_version") // Soporte para corrutinas
+    
+    // Para usar anotaciones de Room sin conflicto con Kotlin
+    kapt("androidx.room:room-compiler:$room_version")
 
     // CameraX para múltiples cámaras y visión avanzada
     implementation("androidx.camera:camera-core:1.4.2")

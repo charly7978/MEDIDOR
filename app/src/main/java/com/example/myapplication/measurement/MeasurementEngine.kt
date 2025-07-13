@@ -471,37 +471,50 @@ class MeasurementEngine {
     /**
      * Mide el ángulo formado por tres puntos (vértice en el segundo parámetro).
      * @param point1 Primer punto
-    
-    // Crear clave de caché
-    val cacheKey = MeasurementCacheKey(
-        type = MeasurementType.DISTANCE,
-        pointsHash = Objects.hash(point1, point2, use3D),
-        method = if (use3D) "3D Distance" else "2D Distance"
-    )
-    
-    // Usar caché si está disponible
-    return measurementCache.getOrCompute(cacheKey) {
-        // Calcular distancia
-        val distance = if (use3D && hasDepthData(point1, point2)) {
-            calculate3DDistance(point1, point2)
-        } else {
-            calculateEuclideanDistance(point1, point2) * calibrationFactor
+     * @param vertex Vértice del ángulo
+     * @param point3 Tercer punto
+     * @return Ángulo en grados entre 0 y 180
+     */
+    fun measureAngle(point1: MeasurementPoint, vertex: MeasurementPoint, point3: MeasurementPoint): Double {
+        // Validar puntos
+        point1.validate()
+        vertex.validate()
+        point3.validate()
+
+        // Calcular vectores desde el vértice
+        val v1x = point1.x - vertex.x
+        val v1y = point1.y - vertex.y
+        val v2x = point3.x - vertex.x
+        val v2y = point3.y - vertex.y
+
+        // Calcular el producto punto
+        val dotProduct = v1x * v2x + v1y * v2y
+        
+        // Calcular las magnitudes
+        val mag1 = sqrt(v1x * v1x + v1y * v1y)
+        val mag2 = sqrt(v2x * v2x + v2y * v2y)
+        
+        // Evitar división por cero
+        if (mag1 == 0.0 || mag2 == 0.0) {
+            throw MeasurementError.InvalidMeasurementPoints("Los puntos no forman un ángulo válido")
         }
         
-        // Calcular confianza
-        val confidence = calculateConfidence(point1, point2)
+        // Calcular el ángulo en radianes y convertirlo a grados
+        val angleRad = acos(dotProduct / (mag1 * mag2))
+        val angleDeg = angleRad * (180.0 / Math.PI)
         
-        // Crear y retornar resultado
-        MeasurementResult(
-            type = MeasurementType.DISTANCE,
-            value = distance,
-            unit = "m",
+        // Calcular confianza basada en la calidad de los puntos
+        val confidence = (point1.confidence + vertex.confidence + point3.confidence) / 3.0
+        
+        return MeasurementResult(
+            type = MeasurementType.ANGLE,
+            value = angleDeg,
+            unit = "°",
             confidence = confidence,
-            points = listOf(point1, point2),
-            method = if (use3D) "3D Distance" else "2D Distance",
+            points = listOf(point1, vertex, point3),
+            method = "2D Angle Calculation",
             metadata = mapOf(
-                "is3D" to use3D,
-                "calibrationFactor" to calibrationFactor,
+                "is3D" to false,
                 "timestamp" to System.currentTimeMillis()
             )
         ).also { addToHistory(it) }

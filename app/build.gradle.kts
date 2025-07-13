@@ -95,7 +95,7 @@ dependencies {
     
     // ViewModel y Lifecycle
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.9.1")
-    implementation(libs.androidx.activity.ktx)
+    implementation("androidx.activity:activity-ktx:1.8.2")
     
     // Room para base de datos local
     val roomVersion = "2.6.1"

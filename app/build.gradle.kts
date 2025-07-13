@@ -27,13 +27,12 @@ android {
             )
             signingConfig = signingConfigs.getByName("debug")
             
-            // Configurar ubicación absoluta en el escritorio
+            // Configuración básica sin rutas personalizadas
             applicationVariants.all {
-                outputs.forEach { output ->
-                    val outputDirectory = File(System.getProperty("user.home"), "Desktop/AndroidAPKs")
-                    output.outputFileName = "MedidorAR-${versionName}.apk"
-                    (output as com.android.build.gradle.internal.api.BaseVariantOutputImpl).outputFileName = 
-                        "MedidorAR-${versionName}.apk"
+                outputs.all {
+                    if (this is com.android.build.gradle.internal.api.BaseVariantOutputImpl) {
+                        outputFileName = "app-${variantName}-${versionName}.apk"
+                    }
                 }
             }
         }

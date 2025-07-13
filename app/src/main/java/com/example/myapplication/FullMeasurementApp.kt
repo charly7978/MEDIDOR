@@ -18,8 +18,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.myapplication.camera.CameraType
+import com.example.myapplication.measurement.MeasurementResult
+import com.example.myapplication.measurement.MeasurementType
+import com.example.myapplication.viewmodel.MeasurementViewModel
 
-data class MeasurementResult(
+// Adaptadores para la UI que simplifican los modelos de datos complejos
+data class UIMeasurementResult(
     val type: String,
     val value: String,
     val unit: String,
@@ -27,13 +33,13 @@ data class MeasurementResult(
     val timestamp: Long = System.currentTimeMillis()
 )
 
-data class CameraInfo(
+data class UICameraInfo(
     val name: String,
     val type: String,
     val available: Boolean
 )
 
-data class SensorInfo(
+data class UISensorInfo(
     val name: String,
     val type: String,
     val available: Boolean,

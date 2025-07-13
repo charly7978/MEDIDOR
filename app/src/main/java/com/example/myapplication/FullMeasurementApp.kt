@@ -2,10 +2,6 @@ package com.example.myapplication
 
 import android.Manifest
 import android.content.pm.PackageManager
-import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -53,10 +49,10 @@ fun FullMeasurementApp() {
     var availableCameras by remember { mutableStateOf(listOf<CameraInfo>()) }
     var availableSensors by remember { mutableStateOf(listOf<SensorInfo>()) }
     var isCalibrated by remember { mutableStateOf(false) }
-    
+
     val context = LocalContext.current
     val tabs = listOf("Inicio", "Cámaras", "Sensores", "Mediciones", "AR", "Config")
-    
+
     // Simular detección de cámaras disponibles
     LaunchedEffect(Unit) {
         availableCameras = listOf(
@@ -67,7 +63,7 @@ fun FullMeasurementApp() {
             CameraInfo("Cámara Macro", "Macro", false),
             CameraInfo("Cámara de Profundidad", "ToF/Profundidad", false)
         )
-        
+
         availableSensors = listOf(
             SensorInfo("Acelerómetro", "Movimiento", true, "Alta"),
             SensorInfo("Giroscopio", "Rotación", true, "Alta"),
@@ -78,7 +74,7 @@ fun FullMeasurementApp() {
             SensorInfo("Proximidad", "Proximidad", true, "Alta")
         )
     }
-    
+
     // Verificar permisos
     LaunchedEffect(Unit) {
         val permissions = arrayOf(
@@ -86,16 +82,19 @@ fun FullMeasurementApp() {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.RECORD_AUDIO
         )
-        
+
         hasPermissions = permissions.all { permission ->
-            ContextCompat.checkSelfPermission(context, permission) == PackageManager.PERMISSION_GRANTED
+            ContextCompat.checkSelfPermission(
+                context,
+                permission
+            ) == PackageManager.PERMISSION_GRANTED
         }
     }
-    
+
     Column(modifier = Modifier.fillMaxSize()) {
         // Top Bar
         TopAppBar(
-            title = { 
+            title = {
                 Text(
                     "Medidor Profesional AR",
                     fontWeight = FontWeight.Bold,
@@ -111,7 +110,7 @@ fun FullMeasurementApp() {
                 }
             }
         )
-        
+
         // Content
         Box(
             modifier = Modifier
@@ -119,24 +118,31 @@ fun FullMeasurementApp() {
                 .weight(1f)
         ) {
             when (selectedTab) {
-                0 -> HomeScreen(hasPermissions, isCalibrated, availableCameras.size, availableSensors.size)
+                0 -> HomeScreen(
+                    hasPermissions,
+                    isCalibrated,
+                    availableCameras.size,
+                    availableSensors.size
+                )
+
                 1 -> CameraScreen(availableCameras)
                 2 -> SensorScreen(availableSensors)
                 3 -> MeasurementScreen(measurementResults) { result ->
                     measurementResults = measurementResults + result
                 }
+
                 4 -> ARScreen(isCalibrated) { isCalibrated = it }
                 5 -> ConfigScreen(hasPermissions, isCalibrated) { isCalibrated = it }
             }
         }
-        
+
         // Bottom Navigation
         NavigationBar(
             containerColor = Color(0xFFF5F5F5)
         ) {
             tabs.forEachIndexed { index, title ->
                 NavigationBarItem(
-                    icon = { 
+                    icon = {
                         Icon(
                             when (index) {
                                 0 -> Icons.Default.Home
@@ -169,11 +175,11 @@ fun HomeScreen(hasPermissions: Boolean, isCalibrated: Boolean, cameraCount: Int,
         item {
             WelcomeSection()
         }
-        
+
         item {
             StatusCard(hasPermissions, isCalibrated, cameraCount, sensorCount)
         }
-        
+
         item {
             Text(
                 "Características Avanzadas:",
@@ -182,7 +188,7 @@ fun HomeScreen(hasPermissions: Boolean, isCalibrated: Boolean, cameraCount: Int,
                 color = Color(0xFF1976D2)
             )
         }
-        
+
         val features = listOf(
             "🎥 Múltiples Cámaras ($cameraCount detectadas)" to "Utiliza todas las cámaras disponibles del dispositivo",
             "🧠 IA Integrada" to "TensorFlow Lite + ML Kit para detección automática",
@@ -191,7 +197,7 @@ fun HomeScreen(hasPermissions: Boolean, isCalibrated: Boolean, cameraCount: Int,
             "⚡ Calibración Automática" to "Detecta objetos conocidos para calibración",
             "📊 Análisis Avanzado" to "Indicadores de confianza y estabilidad"
         )
-        
+
         items(features) { (title, description) ->
             FeatureCard(title, description)
         }
@@ -249,7 +255,7 @@ fun StatusCard(hasPermissions: Boolean, isCalibrated: Boolean, cameraCount: Int,
                 color = Color(0xFF1976D2)
             )
             Spacer(modifier = Modifier.height(12.dp))
-            
+
             StatusItem("Permisos", if (hasPermissions) "✅ Concedidos" else "⚠️ Pendientes")
             StatusItem("Calibración", if (isCalibrated) "✅ Calibrado" else "🔧 Pendiente")
             StatusItem("Cámaras", "📱 $cameraCount detectadas")
@@ -313,7 +319,7 @@ fun CameraScreen(cameras: List<CameraInfo>) {
                 color = Color(0xFF1976D2)
             )
         }
-        
+
         items(cameras) { camera ->
             CameraCard(camera)
         }
@@ -377,7 +383,7 @@ fun SensorScreen(sensors: List<SensorInfo>) {
                 color = Color(0xFF1976D2)
             )
         }
-        
+
         items(sensors) { sensor ->
             SensorCard(sensor)
         }
@@ -445,7 +451,7 @@ fun MeasurementScreen(results: List<MeasurementResult>, onAddResult: (Measuremen
                 fontWeight = FontWeight.Bold,
                 color = Color(0xFF1976D2)
             )
-            
+
             Button(
                 onClick = {
                     // Simular nueva medición
@@ -455,7 +461,7 @@ fun MeasurementScreen(results: List<MeasurementResult>, onAddResult: (Measuremen
                     val randomUnit = units.random()
                     val randomValue = (10..1000).random().toString()
                     val randomConfidence = (0.7f..1.0f).random()
-                    
+
                     onAddResult(
                         MeasurementResult(
                             type = randomType,
@@ -472,9 +478,9 @@ fun MeasurementScreen(results: List<MeasurementResult>, onAddResult: (Measuremen
                 Text("Nueva Medición", color = Color.White)
             }
         }
-        
+
         Spacer(modifier = Modifier.height(16.dp))
-        
+
         if (results.isEmpty()) {
             Card(
                 modifier = Modifier.fillMaxWidth(),
@@ -595,7 +601,7 @@ fun ARScreen(isCalibrated: Boolean, onCalibrateChange: (Boolean) -> Unit) {
             color = Color(0xFF666666)
         )
         Spacer(modifier = Modifier.height(32.dp))
-        
+
         Card(
             modifier = Modifier.fillMaxWidth(),
             colors = CardDefaults.cardColors(
@@ -622,9 +628,9 @@ fun ARScreen(isCalibrated: Boolean, onCalibrateChange: (Boolean) -> Unit) {
                 }
             }
         }
-        
+
         Spacer(modifier = Modifier.height(24.dp))
-        
+
         Button(
             onClick = { /* Iniciar medición AR */ },
             enabled = isCalibrated,
@@ -638,7 +644,11 @@ fun ARScreen(isCalibrated: Boolean, onCalibrateChange: (Boolean) -> Unit) {
 }
 
 @Composable
-fun ConfigScreen(hasPermissions: Boolean, isCalibrated: Boolean, onCalibrateChange: (Boolean) -> Unit) {
+fun ConfigScreen(
+    hasPermissions: Boolean,
+    isCalibrated: Boolean,
+    onCalibrateChange: (Boolean) -> Unit
+) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
@@ -653,17 +663,17 @@ fun ConfigScreen(hasPermissions: Boolean, isCalibrated: Boolean, onCalibrateChan
                 color = Color(0xFF1976D2)
             )
         }
-        
+
         item {
             ConfigCard("Permisos", "Gestionar permisos de la aplicación", hasPermissions)
         }
-        
+
         item {
             ConfigCard("Calibración", "Configurar calibración de medición", isCalibrated) {
                 onCalibrateChange(!isCalibrated)
             }
         }
-        
+
         item {
             ConfigCard("Acerca de", "Versión 1.0.0 - Medidor Profesional AR", true)
         }

@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.example.myapplication.data.dao.MeasurementDao
 import com.example.myapplication.data.entity.MeasurementEntity
 import com.example.myapplication.data.entity.MeasurementResultEntity
@@ -24,6 +25,7 @@ import javax.inject.Singleton
     version = 1,
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
     
     /**

@@ -31,10 +31,6 @@ data class CameraMeasurement(
     val timestamp: Long = System.currentTimeMillis()
 )
 
-enum class MeasurementMethod {
-    STEREO_VISION, DEPTH_SENSOR, FOCAL_LENGTH, AR_CORE
-}
-
 class MultiCameraManager(private val context: Context) {
 
     private var cameraProvider: ProcessCameraProvider? = null
@@ -272,7 +268,7 @@ class MultiCameraManager(private val context: Context) {
 
         // Calcular promedio ponderado
         val totalWeight = weights.sum()
-        return measurements.zip(weights).sumOf { (measurement, weight) ->
+        return measurements.zip(weights).sumOf { (measurement, weight) -> 
             (measurement * weight / totalWeight).toDouble()
         }.toFloat()
     }
@@ -314,4 +310,4 @@ class MultiCameraManager(private val context: Context) {
         cameraProvider?.unbindAll()
         cameraThread.quitSafely()
     }
-} 
+}

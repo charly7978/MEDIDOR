@@ -1,6 +1,7 @@
 {
     "recommendations": [
         "xline.agent-lab",
-        "ms-vscode.vscode-speech"
+        "ms-vscode.vscode-speech",
+        "fwcd.kotlin"
     ]
 }

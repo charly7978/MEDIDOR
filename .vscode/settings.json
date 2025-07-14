@@ -34,5 +34,10 @@
     "terminal.integrated.mouseWheelZoom": true,
     "terminal.integrated.smoothScrolling": true,
     "terminal.integrated.windowsUseConptyDll": true,
-    "java.import.generatesMetadataFilesAtProjectRoot": true
+    "java.import.generatesMetadataFilesAtProjectRoot": true,
+    "workbench.editor.limit.value": 10000,
+    "notebook.output.textLineLimit": 300,
+    "git.detectSubmodulesLimit": 1000,
+    "githubRepositories.indexing.cacheSizeLimit": 10000,
+    "github-actions.workflows.pinned.refresh.enabled": true
 }

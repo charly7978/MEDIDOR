@@ -11,12 +11,11 @@ class MeasurementApplication : Application() {
         super.onCreate()
         Log.d("MeasurementApp", "Application started successfully")
         
-        // Configuración adicional si es necesaria
         setupApplication()
     }
     
     private fun setupApplication() {
-        // Configuraciones adicionales de la aplicación
-        // Por ejemplo, configuración de logging, crash reporting, etc.
+        // Additional application configurations
+        // For example, logging setup, crash reporting, etc.
     }
 }
